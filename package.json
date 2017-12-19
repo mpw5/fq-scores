@@ -1,0 +1,20 @@
+{
+  "name": "fqscores",
+  "version": "1.0.0",
+  "description": "Process Friday Question Scores",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Mark Whitaker <mark.whitaker@justice.gov.uk>",
+  "dependencies": {
+    "axios": "^0.13.1",
+    "ws": "^1.1.1",
+    "request": "2.72.0",
+    "mongodb": "*",
+    "synchronize": "^0.9.14",
+    "httpdispatcher": "*",
+    "@slack/client": "^3.14.2",
+    "twss": "^0.1.6"
+  },
+  "license": "MIT"
+}
