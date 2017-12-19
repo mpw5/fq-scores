@@ -22,8 +22,7 @@ const ts = require('./tinyspeck.js'),
 
 var slack = ts.instance({ });
 var connected=false;
-//var SLACK_API_TOKEN="xoxb-284495838034-ckRDCU7qIPW6RpE26DK2sgWi";
-var SLACK_API_TOKEN="xoxb-287123298641-Ex87N1moPmfVQR6xvRwAp2Pt";
+var SLACK_API_TOKEN=REDACTED
 var message;
 var twss = require('twss');
 
