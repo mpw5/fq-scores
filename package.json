@@ -14,7 +14,9 @@
     "synchronize": "^0.9.14",
     "httpdispatcher": "*",
     "@slack/client": "^3.14.2",
-    "twss": "^0.1.6"
+    "twss": "^0.1.6",
+    "optimist": "^0.6.1",
+    "giphy-api": "^1.2.7"
   },
   "license": "MIT"
 }
