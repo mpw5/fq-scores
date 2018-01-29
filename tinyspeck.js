@@ -6,8 +6,7 @@
 //
 "use strict";
 
-const dispatcher = require('httpdispatcher'),
-      http = require('http'),
+const http = require('http'),
       axios = require('axios'),
       WebSocket = require('ws'),
       qs = require('querystring'),
@@ -15,7 +14,9 @@ const dispatcher = require('httpdispatcher'),
       datastore = require("./datastore.js").async,
       oauthd = require('./oauthd.js'),
       add_to_slack = 'https://slack.com/oauth/authorize?scope=bot,chat:write:bot,pins:read,reactions:read,stars:read,commands&client_id=' + process.env.SLACK_CLIENT_ID;
-    
+
+var HttpDispatcher = require('httpdispatcher');
+var dispatcher     = new HttpDispatcher();
 
 class TinySpeck extends EventEmitter {
   /**
@@ -29,7 +30,7 @@ class TinySpeck extends EventEmitter {
 
     // message defaults
     this.defaults = defaults || {};
-    
+
     // loggers
     this.on('error', console.error);
   }
@@ -55,18 +56,18 @@ class TinySpeck extends EventEmitter {
    */
   send(/* ...args */) {
     let args = 1 <= arguments.length ? Array.prototype.slice.call(arguments, 0) : [];
-    
+
     let endPoint = 'chat.postMessage'; // default action is post message
-    
+
     // if an endpoint was passed in, use it
     if (typeof args[0] === 'string') endPoint = args.shift();
 
     // use defaults when available
     let message = Object.assign({}, this.defaults, args);
-    
+
     // call update if ts included
     if (message.ts && endPoint === 'chat.postMessage') endPoint = 'chat.update';
-    
+
     return this.post(endPoint, message);
   }
 
@@ -82,10 +83,10 @@ class TinySpeck extends EventEmitter {
       try { message = JSON.parse(message); }      // JSON string
       catch(e) { message = qs.parse(message); }   // QueryString
     }
-    
+
     // message button payloads are JSON strings
     if (message.payload) message.payload = JSON.parse(message.payload);
-    
+
     return message;
   }
 
@@ -103,7 +104,7 @@ class TinySpeck extends EventEmitter {
     let type = this.parse(message).type;
     let trigger_word = this.parse(message).trigger_word;
     let payload = this.parse(message).payload;
-    
+
     // wildcard
     this.emit('*', message);
 
@@ -177,40 +178,40 @@ class TinySpeck extends EventEmitter {
       } else {
         res.writeHead(200, {'Content-Type': 'text/html'});
         let html = '<p>Failed! Something went wrong when authing, check the logs</p>';
-        res.end(html);    
+        res.end(html);
       }
-          
-      // get the code, turn it into a token    
+
+      // get the code, turn it into a token
       let code = req.params.code;
       oauthd.oauth(code).then(function(body) {
         //store body.access_token;
         datastore.set("bot_token", body.access_token).then(function(){
-          console.log("token stored"); 
+          console.log("token stored");
         });
       }).catch(function(error) {
         console.log(error);
         res.send(error);
       });
-    });       
-     
-    
+    });
+
+
     return http.createServer((req, res) => {
       let data = '';
-      
+
       req.on('data', chunk => data += chunk);
-      
+
       req.on('end', () => {
         let message = this.parse(data);
 
         // notify upon request
-        this.emit(req.url, message); 
+        this.emit(req.url, message);
 
         // new subscription challenge
         if (message.challenge){ console.log("verifying event subscription!"); res.end(message.challenge); return exit(); }
-        
+
         // digest the incoming message
         if (!token || token === message.token) this.digest(message);
-        
+
         // close response
         res.end();
       });
@@ -233,7 +234,7 @@ class TinySpeck extends EventEmitter {
   post(endPoint, payload) {
     let token = payload.token;
     payload = payload[0];
-    
+
     if (!/^http/i.test(endPoint)) {
       // serialize JSON params
       if (payload.attachments)
@@ -244,13 +245,13 @@ class TinySpeck extends EventEmitter {
       if(isJSON(payload.attachments)){
         payload.attachments = JSON.parse(payload.attachments);
       }
-    }   
-    
+    }
+
     if(endPoint.indexOf('hooks')!=-1){
       return axios({ // responding to slash command
         url: endPoint,
         data: payload,
-        method: 'post', 
+        method: 'post',
         headers: { 'user-agent': 'TinySpeck' }
       });
     } else {
@@ -258,7 +259,7 @@ class TinySpeck extends EventEmitter {
         url: endPoint+"?token="+token,
         data: payload,
         method: 'post',
-        baseURL: 'https://slack.com/api/', 
+        baseURL: 'https://slack.com/api/',
         headers: { 'user-agent': 'TinySpeck' }
       });
     }
