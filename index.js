@@ -292,6 +292,6 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
 });
 
 // incoming http requests
-slack.listen('3000');
+slack.listen(process.env.PORT || '3000');
 
 console.log(process.env);
