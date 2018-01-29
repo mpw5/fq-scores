@@ -1,8 +1,8 @@
 // 1. This implements most of the code, watching for slash commands, sets up event handling for various scenarios:
 //   a) /fqscores  =  display the table
-//   b) /fqscores @user number - updates the db table adding the number to the users existing score or adding the user 
+//   b) /fqscores @user number - updates the db table adding the number to the users existing score or adding the user
 //    if they don't already exist
-//   c) /fqscores @user :emoji: - updates the db table adding the emoji to the users existing emoji array or adding the user 
+//   c) /fqscores @user :emoji: - updates the db table adding the emoji to the users existing emoji array or adding the user
 //    if they don't already exist
 // 2) any other command gives the user an error
 // 3) running the command in any channel other than #friday-question gives the user an error
@@ -16,6 +16,8 @@ const ts = require('./tinyspeck.js'),
     MemoryDataStore = require('@slack/client').MemoryDataStore,
     CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS,
     RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
+
+require('dotenv').config();
 
 var slack = ts.instance({});
 var connected = false;
@@ -243,7 +245,7 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
     let ts = message.ts;
 
     if (typeof(user) != "undefined") {  // ignore bot messages
-        
+
         console.log(">>>> channel: " + channel);
         console.log(">>>> text: " + text);
         console.log(">>>> user: " + user);
@@ -259,9 +261,9 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
         console.log("twss: " + prob);
 
         if (isTwss) {
-       
+
             console.log("getting twss gif");
-            
+
             giphyApi.random({
                 tag: 'thats-what-she-said-the-office-michael-scott',
                 fmt: 'json'
@@ -283,11 +285,13 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
 
                   }
 
-             }); 
-        
+             });
+
          }
     }
 });
 
 // incoming http requests
 slack.listen('3000');
+
+console.log(process.env);

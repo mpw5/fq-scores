@@ -9,6 +9,7 @@
   "dependencies": {
     "@slack/client": "^3.14.2",
     "axios": "^0.13.1",
+    "dotenv": "^4.0.0",
     "giphy-api": "^1.2.7",
     "httpdispatcher": "^2.1.1",
     "mongodb": "*",
