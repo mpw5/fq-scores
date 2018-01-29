@@ -7,16 +7,16 @@
   },
   "author": "Mark Whitaker <mark.whitaker@justice.gov.uk>",
   "dependencies": {
-    "axios": "^0.13.1",
-    "ws": "^1.1.1",
-    "request": "2.72.0",
-    "mongodb": "*",
-    "synchronize": "^0.9.14",
-    "httpdispatcher": "*",
     "@slack/client": "^3.14.2",
-    "twss": "^0.1.6",
+    "axios": "^0.13.1",
+    "giphy-api": "^1.2.7",
+    "httpdispatcher": "^2.1.1",
+    "mongodb": "*",
     "optimist": "^0.6.1",
-    "giphy-api": "^1.2.7"
+    "request": "2.72.0",
+    "synchronize": "^0.9.14",
+    "twss": "^0.1.6",
+    "ws": "^1.1.1"
   },
   "license": "MIT"
 }
