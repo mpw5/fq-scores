@@ -3,8 +3,8 @@ exports.numNeighbours = 3;
 exports.threshold = 0.5;
 
 exports.trainingData = {
-  pos: require('./Positive_Prompts_TS.js').data,
-  neg: require('./Negative_Prompts_FML.js').data
+  pos: require('../data/Positive_Prompts_TS.js').data,
+  neg: require('../data/Negative_Prompts_FML.js').data
 };
 
 var classify = {

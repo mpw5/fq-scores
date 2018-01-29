@@ -8,9 +8,9 @@
 // 3) running the command in any channel other than #friday-question gives the user an error
 "use strict";
 
-const ts = require('./tinyspeck.js'),
+const ts = require('./src/tinyspeck.js'),
     users = {},
-    datastore = require("./datastore.js").async,
+    datastore = require("./src/datastore.js").async,
     RtmClient = require('@slack/client').RtmClient,
     RTM_EVENTS = require('@slack/client').RTM_EVENTS,
     MemoryDataStore = require('@slack/client').MemoryDataStore,
@@ -23,7 +23,7 @@ var slack = ts.instance({});
 var connected = false;
 var message;
 
-var twss = require('./twss.js');
+var twss = require('./src/twss.js');
 var giphyApi = require('giphy-api')(process.env.GIPHY_API_KEY);
 
 // receive the /fqscores command and process it
@@ -273,11 +273,10 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
                   }
                   else {
                       console.log(">>>>> got twss gif");
-                      console.log(res);
                       console.log(res.data.fixed_width_downsampled_url);
 
                       rtm.send({
-                          text:      res.data.fixed_width_downsampled_url,
+                          text:      'https://media.giphy.com/media/13gkqBgnTK8aKQ/giphy.gif', //res.data.fixed_width_downsampled_url,
                           channel:   channel,
                           thread_ts: ts,
                           type:      RTM_EVENTS.MESSAGE
@@ -293,5 +292,3 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
 
 // incoming http requests
 slack.listen(process.env.PORT || '3000');
-
-console.log(process.env);
