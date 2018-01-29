@@ -277,7 +277,7 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
                       console.log(res.data.fixed_width_downsampled_url);
 
                       rtm.send({
-                          text:      'https://media.giphy.com/media/13gkqBgnTK8aKQ/giphy.gif', //res.data.fixed_width_downsampled_url,
+                          text:      res.data.fixed_width_downsampled_url,
                           channel:   channel,
                           thread_ts: ts,
                           type:      RTM_EVENTS.MESSAGE
