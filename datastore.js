@@ -63,13 +63,13 @@ function setEmoji(key, value) {
 function getAll(callback){
   try{
       //Find all documents in the collection:
-    
+
       collection.find({}).sort({score: -1} ).toArray(function(err, result) {
         if (err) throw err;
-          
+
         callback(result);
       });
-  
+
   }catch (ex) {
       console.log("Error getting results from db");
     }
@@ -137,7 +137,10 @@ function connect() {
     try {
       mongodb.MongoClient.connect(MONGODB_URI, function(err, db) {
         if(err) reject(err);
-        collection = db.collection(process.env.COLLECTION);
+
+        const myDb = db.db(process.env.DB);
+
+        collection = myDb.collection(process.env.COLLECTION);
         resolve(collection);
       });
     } catch(ex) {
@@ -280,7 +283,7 @@ var syncDatastore = {
   getAll: getAll,
   remove: removeSync,
   removeMany: removeManySync,
-  connect: connectSync,  
+  connect: connectSync,
   initializeApp: initializeApp
 };
 
