@@ -244,50 +244,48 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
 
     if (typeof(user) != "undefined") {  // ignore bot messages
         
-    console.log(">>>> channel: " + channel);
-    console.log(">>>> text: " + text);
-    console.log(">>>> user: " + user);
-    console.log(">>>> type: " + type);
-    console.log(">>>> subtype: " + subtype);
-    console.log(">>>> ts: " + ts);
-    console.log(">>>> thread_ts: " + thread_ts);
-  
-    twss.threshold = 0.65;
-    let isTwss = twss.is(text);
-    let prob = twss.prob(text);
+        console.log(">>>> channel: " + channel);
+        console.log(">>>> text: " + text);
+        console.log(">>>> user: " + user);
+        console.log(">>>> type: " + type);
+        console.log(">>>> subtype: " + subtype);
+        console.log(">>>> ts: " + ts);
+        console.log(">>>> thread_ts: " + thread_ts);
 
-    console.log("twss: " + prob);
+        twss.threshold = 0.65;
+        let isTwss = twss.is(text);
+        let prob = twss.prob(text);
 
-    if (isTwss) {
+        console.log("twss: " + prob);
+
+        if (isTwss) {
        
-        console.log("getting twss gif");
+            console.log("getting twss gif");
             
-        giphyApi.random({
-            tag: 'thats-what-she-said-the-office-michael-scott',
-            fmt: 'json'
-        }, function (err, res) {
-              if (err) {
-                  console.log(err);
-              }
-              else {
-                  console.log(">>>>> got twss gif");
-                  console.log(res);
-                  console.log(res.data.fixed_width_downsampled_url);
+            giphyApi.random({
+                tag: 'thats-what-she-said-the-office-michael-scott',
+                fmt: 'json'
+            }, function (err, res) {
+                  if (err) {
+                      console.log(err);
+                  }
+                  else {
+                      console.log(">>>>> got twss gif");
+                      console.log(res);
+                      console.log(res.data.fixed_width_downsampled_url);
 
-                  rtm.send({
-                      text:      res.data.url,
-                      channel:   channel,
-                      thread_ts: ts,
-                      type:      RTM_EVENTS.MESSAGE
-                  });
+                      rtm.send({
+                          text:      'https://media.giphy.com/media/13gkqBgnTK8aKQ/giphy.gif', //res.data.fixed_width_downsampled_url,
+                          channel:   channel,
+                          thread_ts: ts,
+                          type:      RTM_EVENTS.MESSAGE
+                      });
 
-              }
+                  }
 
-          }); 
+             }); 
         
-          console.log("replying twss");
-
-        }
+         }
     }
 });
 
