@@ -18,6 +18,7 @@ const ts = require('./src/tinyspeck.js'),
     RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
 
 require('dotenv').config();
+require ('newrelic');
 
 var slack = ts.instance({});
 var connected = false;
@@ -254,7 +255,7 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
         console.log(">>>> ts: " + ts);
         console.log(">>>> thread_ts: " + thread_ts);
 
-        twss.threshold = 0.65;
+        twss.threshold = 0.7;
         let isTwss = twss.is(text);
         let prob = twss.prob(text);
 
