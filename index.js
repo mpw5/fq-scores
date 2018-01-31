@@ -8,6 +8,8 @@
 // 3) running the command in any channel other than #friday-question gives the user an error
 "use strict";
 
+require ('newrelic');
+
 const ts = require('./src/tinyspeck.js'),
     users = {},
     datastore = require("./src/datastore.js").async,
@@ -18,7 +20,6 @@ const ts = require('./src/tinyspeck.js'),
     RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
 
 require('dotenv').config();
-require ('newrelic');
 
 var slack = ts.instance({});
 var connected = false;
