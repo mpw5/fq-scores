@@ -119,7 +119,7 @@ slack.on('/fqscores', payload => {
                         .then(function(score) {
                             let message = Object.assign({
                                 "response_type": "in_channel",
-                                text: userAwardedPoints + " has been awarded " + Number(pointsAwarded).toLocaleString() + " points by @" + payload.user_name + " " + comment
+                                text: userAwardedPoints + " has been awarded " + Number(pointsAwarded).toLocaleString() + " points by @" + payload.user_name + comment
                             });
 
                             console.log("message: " + message);
@@ -256,7 +256,7 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
         console.log(">>>> ts: " + ts);
         console.log(">>>> thread_ts: " + thread_ts);
 
-        twss.threshold = 0.7;
+        twss.threshold = 0.8;
         let isTwss = twss.is(text);
         let prob = twss.prob(text);
 
@@ -278,7 +278,7 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
                       console.log(res.data.fixed_width_downsampled_url);
 
                       rtm.send({
-                          text:      'https://media.giphy.com/media/13gkqBgnTK8aKQ/giphy.gif', //res.data.fixed_width_downsampled_url,
+                          text:      res.data.fixed_width_downsampled_url,
                           channel:   channel,
                           thread_ts: ts,
                           type:      RTM_EVENTS.MESSAGE
