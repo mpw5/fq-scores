@@ -276,14 +276,14 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
                   else {
                       console.log(">>>>> got twss gif");
                       console.log(res.data.fixed_width_downsampled_url);
-/*
+
                       rtm.send({
                           text:      ":twss:"
                           channel:   channel,
                           thread_ts: ts,
                           type:      RTM_EVENTS.MESSAGE
                       });
-*/
+
                   }
 
              });
