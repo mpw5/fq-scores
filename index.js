@@ -278,7 +278,7 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
                       console.log(res.data.fixed_width_downsampled_url);
 
                       rtm.send({
-                          text:      ":twss:"
+                          text:      ":twss:",
                           channel:   channel,
                           thread_ts: ts,
                           type:      RTM_EVENTS.MESSAGE
