@@ -1,17 +1,15 @@
-//
 // This is a library file implementing functions for storing and working with data in your MongoDB.
-//
 
 "use strict";
 
 var mongodb = require('mongodb');
-// Standard URI format: mongodb://[dbuser:dbpassword@]host:port/dbname, details set in .env
-var MONGODB_URI = 'mongodb://' + process.env.USER + ':' + process.env.PASS + '@' + process.env.HOST + ':' + process.env.DB_PORT + '/' + process.env.DB;
+// Standard URI format: mongodb+srv://dbuser:dbpassword@host/dbname?retryWrites=true&w=majority, details set in .env
+// eg mongodb+srv://mpw5:<password>@fq-scores-test.yofhx.mongodb.net/fq-scores-test?retryWrites=true&w=majority
+var MONGODB_URI = 'mongodb+srv://' + process.env.USERNAME + ':' + process.env.PASS + '@' + process.env.HOST + '/' + process.env.DB + '?' + process.env.DB_PARAMS;
 var collection;
 
 // ------------------------------
 // ASYNCHRONOUS PROMISE-BASED API
-//  SEE BELOW FOR SYNCHRONOUS API
 // ------------------------------
 
 // Serializes an object to JSON and stores it to the database
@@ -74,7 +72,6 @@ function setEmoji(key, value) {
   });
 }
 
-
 // Get all records from db, sorted by score
 function getAll(callback) {
   try {
@@ -94,7 +91,7 @@ function getAll(callback) {
 }
 
 
-// Fetches an object from the DynamoDB instance, deserializing it from JSON
+// Fetches an object from the database, deserializing it from JSON
 function get(key) {
   return new Promise(function(resolve, reject) {
     try {
@@ -160,7 +157,7 @@ function removeMany(keys) {
 function connect() {
   return new Promise(function(resolve, reject) {
     try {
-      mongodb.MongoClient.connect(MONGODB_URI, function(err, db) {
+      mongodb.MongoClient.connect(MONGODB_URI, { useNewUrlParser: true }, function(err, db) {
         if (err) reject(err);
 
         const myDb = db.db(process.env.DB);
@@ -209,88 +206,6 @@ function DatastoreUnknownException(method, args, ex) {
   this.error = ex;
 }
 
-// -------------------------------------------
-// SYNCHRONOUS WRAPPERS AROUND THE PROMISE API
-// -------------------------------------------
-
-var sync = require("synchronize");
-
-function setCallback(key, value, callback) {
-  setScore(key, value)
-    .then(function(value) {
-      callback(null, value);
-    })
-    .catch(function(err) {
-      callback(err, null);
-    });
-}
-
-function getCallback(key, callback) {
-  get(key)
-    .then(function(value) {
-      callback(null, value);
-    })
-    .catch(function(err) {
-      callback(err, null);
-    });
-}
-
-function removeCallback(key, callback) {
-  remove(key)
-    .then(function(value) {
-      callback(null, value);
-    })
-    .catch(function(err) {
-      callback(err, null);
-    });
-}
-
-function removeManyCallback(keys, callback) {
-  removeMany(keys)
-    .then(function(value) {
-      callback(null, value);
-    })
-    .catch(function(err) {
-      callback(err, null);
-    });
-}
-
-function connectCallback(callback) {
-  connect()
-    .then(function(value) {
-      callback(null, value);
-    })
-    .catch(function(err) {
-      callback(err, null);
-    });
-}
-
-function setSync(key, value) {
-  return sync.await(setCallback(key, value, sync.defer()));
-}
-
-function getSync(key) {
-  return sync.await(getCallback(key, sync.defer()));
-}
-
-function removeSync(key) {
-  return sync.await(removeCallback(key, sync.defer()));
-}
-
-function removeManySync(keys) {
-  return sync.await(removeManyCallback(keys, sync.defer()));
-}
-
-function connectSync() {
-  return sync.await(connectCallback(sync.defer()));
-}
-
-function initializeApp(app) {
-  app.use(function(req, res, next) {
-    sync.fiber(next);
-  });
-}
-
 var asyncDatastore = {
   setScore: setScore,
   setEmoji: setEmoji,
@@ -301,18 +216,6 @@ var asyncDatastore = {
   connect: connect
 };
 
-var syncDatastore = {
-  setScore: setSync,
-  setEmoji: setEmoji,
-  get: getSync,
-  getAll: getAll,
-  remove: removeSync,
-  removeMany: removeManySync,
-  connect: connectSync,
-  initializeApp: initializeApp
-};
-
 module.exports = {
-  async: asyncDatastore,
-  sync: syncDatastore
+  async: asyncDatastore
 };

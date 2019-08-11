@@ -31,7 +31,7 @@
     "SLACK_CLIENT_SECRET": {
       "required": true
     },
-    "USER": {
+    "USERNAME": {
       "required": true
     }
   },
