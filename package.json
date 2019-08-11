@@ -14,7 +14,7 @@
     "axios": "^0.13.1",
     "chai": "^4.1.2",
     "delay": "^2.0.0",
-    "dotenv": "^4.0.0",
+    "dotenv": "^8.0.0",
     "giphy-api": "^1.2.7",
     "httpdispatcher": "^2.1.1",
     "mongodb": "*",
