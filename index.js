@@ -13,7 +13,7 @@ require('newrelic');
 const ts = require('./src/tinyspeck.js'),
   users = {},
   datastore = require("./src/datastore.js").async,
-  RtmClient = require('@slack/client').RtmClient;
+  RtmClient = require('@slack/client').RTMClient;
   // RTM_EVENTS = require('@slack/client').RTM_EVENTS,
   // MemoryDataStore = require('@slack/client').MemoryDataStore;
   // CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS,
