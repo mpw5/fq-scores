@@ -13,11 +13,7 @@ require('newrelic');
 const ts = require('./src/tinyspeck.js'),
   users = {},
   datastore = require("./src/datastore.js").async,
-  RtmClient = require('@slack/client').RtmClient,
-  RTM_EVENTS = require('@slack/client').RTM_EVENTS,
-  MemoryDataStore = require('@slack/client').MemoryDataStore,
-  CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS,
-  RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
+  RtmClient = require('@slack/client').RTMClient;
 
 require('dotenv').config();
 
@@ -44,17 +40,8 @@ slack.on('/fqscores', payload => {
   let comment = '';
 
   for (var i = 2; i < splitText.length; i++) {
-
     comment = comment + ' ' + splitText[i];
-
   }
-
-  console.log("splitText " + splitText);
-  console.log("text " + text);
-  console.log("comment " + splitText);
-  console.log("user " + userAwardedPoints);
-  console.log("points " + pointsAwarded);
-  console.log("comment " + comment);
 
   if (channel === "friday-question") {
     if (userAwardedPoints === '') {
@@ -189,18 +176,19 @@ function getConnected() {
 
 let rtm = new RtmClient(process.env.SLACK_API_TOKEN, {
   logLevel: 'error',
-  dataStore: new MemoryDataStore(),
+  useRtmConnect: true,
+  dataStore: false,
   autoReconnect: true,
   autoMark: true
 });
 
 rtm.start();
 
-rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, () => {
+rtm.on('connected', () => {
   console.log('Connected!');
 });
 
-rtm.on(RTM_EVENTS.MESSAGE, (message) => {
+rtm.on('message', (message) => {
 
   let channel = message.channel;
   let text = message.text;
@@ -227,12 +215,14 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
     console.log("twss: " + prob);
 
     if (isTwss) {
-      rtm.send({
-        text: ":twss:",
-        channel: channel,
-        thread_ts: ts,
-        type: RTM_EVENTS.MESSAGE
-      });
+      rtm.addOutgoingEvent(true,
+                           "message",
+                           { text: ":twss:",
+                             channel: channel,
+                             thread_ts: ts
+                           })
+         .then(res => console.log(`Message sent: ${res}`))
+         .catch(console.error);
     }
   }
 });
