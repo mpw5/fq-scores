@@ -14,10 +14,10 @@ const ts = require('./src/tinyspeck.js'),
   users = {},
   datastore = require("./src/datastore.js").async,
   RtmClient = require('@slack/client').RtmClient,
-  RTM_EVENTS = require('@slack/client').RTM_EVENTS,
-  MemoryDataStore = require('@slack/client').MemoryDataStore,
-  CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS,
-  RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
+  // RTM_EVENTS = require('@slack/client').RTM_EVENTS,
+  MemoryDataStore = require('@slack/client').MemoryDataStore;
+  // CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS,
+  // RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
 
 require('dotenv').config();
 
@@ -196,11 +196,11 @@ let rtm = new RtmClient(process.env.SLACK_API_TOKEN, {
 
 rtm.start();
 
-rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, () => {
+rtm.on('connected', () => {
   console.log('Connected!');
 });
 
-rtm.on(RTM_EVENTS.MESSAGE, (message) => {
+rtm.on('message', (message) => {
 
   let channel = message.channel;
   let text = message.text;
@@ -231,7 +231,7 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
         text: ":twss:",
         channel: channel,
         thread_ts: ts,
-        type: RTM_EVENTS.MESSAGE
+        type: 'message'
       });
     }
   }
