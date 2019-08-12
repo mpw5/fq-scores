@@ -160,7 +160,7 @@ function removeMany(keys) {
 function connect() {
   return new Promise(function(resolve, reject) {
     try {
-      mongodb.MongoClient.connect(MONGODB_URI, function(err, db) {
+      mongodb.MongoClient.connect(MONGODB_URI, { useNewUrlParser: true }, function(err, db) {
         if (err) reject(err);
 
         const myDb = db.db(process.env.DB);

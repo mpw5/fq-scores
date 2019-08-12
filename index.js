@@ -40,17 +40,8 @@ slack.on('/fqscores', payload => {
   let comment = '';
 
   for (var i = 2; i < splitText.length; i++) {
-
     comment = comment + ' ' + splitText[i];
-
   }
-
-  console.log("splitText " + splitText);
-  console.log("text " + text);
-  console.log("comment " + splitText);
-  console.log("user " + userAwardedPoints);
-  console.log("points " + pointsAwarded);
-  console.log("comment " + comment);
 
   if (channel === "friday-question") {
     if (userAwardedPoints === '') {
