@@ -13,9 +13,9 @@ require('newrelic');
 const ts = require('./src/tinyspeck.js'),
   users = {},
   datastore = require("./src/datastore.js").async,
-  RtmClient = require('@slack/client').RtmClient,
+  RtmClient = require('@slack/client').RtmClient;
   // RTM_EVENTS = require('@slack/client').RTM_EVENTS,
-  MemoryDataStore = require('@slack/client').MemoryDataStore;
+  // MemoryDataStore = require('@slack/client').MemoryDataStore;
   // CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS,
   // RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
 
@@ -189,7 +189,9 @@ function getConnected() {
 
 let rtm = new RtmClient(process.env.SLACK_API_TOKEN, {
   logLevel: 'error',
-  dataStore: new MemoryDataStore(),
+  //dataStore: new MemoryDataStore(),
+  useRtmConnect: true,
+  dataStore: false,
   autoReconnect: true,
   autoMark: true
 });
