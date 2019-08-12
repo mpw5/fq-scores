@@ -14,10 +14,6 @@ const ts = require('./src/tinyspeck.js'),
   users = {},
   datastore = require("./src/datastore.js").async,
   RtmClient = require('@slack/client').RTMClient;
-  // RTM_EVENTS = require('@slack/client').RTM_EVENTS,
-  // MemoryDataStore = require('@slack/client').MemoryDataStore;
-  // CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS,
-  // RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
 
 require('dotenv').config();
 
@@ -189,7 +185,6 @@ function getConnected() {
 
 let rtm = new RtmClient(process.env.SLACK_API_TOKEN, {
   logLevel: 'error',
-  //dataStore: new MemoryDataStore(),
   useRtmConnect: true,
   dataStore: false,
   autoReconnect: true,
@@ -229,12 +224,14 @@ rtm.on('message', (message) => {
     console.log("twss: " + prob);
 
     if (isTwss) {
-      rtm.send({
-        text: ":twss:",
-        channel: channel,
-        thread_ts: ts,
-        type: 'message'
-      });
+      rtm.addOutgoingEvent(true,
+                           "message",
+                           { text: ":twss:",
+                             channel: channel,
+                             thread_ts: ts
+                           })
+         .then(res => console.log(`Message sent: ${res}`))
+         .catch(console.error);
     }
   }
 });
