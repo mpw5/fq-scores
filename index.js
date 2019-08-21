@@ -74,6 +74,14 @@ slack.on('/fqscores', payload => {
 
           datastore.setEmoji(userAwardedPoints, pointsAwarded);
 
+          datastore.get(userAwardedPoints)
+            .catch(function(e){
+              console.log(e.type)
+              if(e.type = "DatastoreDataParsingException"){
+                datastore.setScore(userAwardedPoints, 0);
+              }
+            });
+
           slack.send(response_url, message).then(res => {
             console.log("Response sent to /fqscores slash command");
           }, reason => {
