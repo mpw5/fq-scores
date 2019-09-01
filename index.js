@@ -50,7 +50,6 @@ slack.on('/fqscores', payload => {
         .then(function() {
           datastore.getAll(function(result) {
             let message = getResults(result, user_name);
-            console.log(result);
             slack.send(response_url, message).then(res => { // on success
               console.log("Response sent to /fqscores slash command");
             }, reason => { // on failure
@@ -58,8 +57,7 @@ slack.on('/fqscores', payload => {
             });
           });
         });
-    }
-    else if (typeof(pointsAwarded) == "string" && pointsAwarded.charAt(0) == ':' && pointsAwarded.charAt(pointsAwarded.length - 1) == ':') {
+    } else if (typeof(pointsAwarded) == "string" && pointsAwarded.charAt(0) == ':' && pointsAwarded.charAt(pointsAwarded.length - 1) == ':') {
       console.log("adding emoji");
 
       let message = Object.assign({
@@ -75,9 +73,8 @@ slack.on('/fqscores', payload => {
           datastore.setEmoji(userAwardedPoints, pointsAwarded);
 
           datastore.get(userAwardedPoints)
-            .catch(function(e){
-              console.log(e.type)
-              if(e.type = "DatastoreDataParsingException"){
+            .catch(function(e) {
+              if (e.type = "DatastoreDataParsingException") {
                 datastore.setScore(userAwardedPoints, 0);
               }
             });
@@ -88,8 +85,7 @@ slack.on('/fqscores', payload => {
             console.log("An error occurred when responding to /fqscores slash command: " + reason);
           });
         });
-    }
-    else if (isNaN(pointsAwarded) == false) {
+    } else if (isNaN(pointsAwarded) == false) {
       console.log("updating points for user");
 
       getConnected()
@@ -114,8 +110,7 @@ slack.on('/fqscores', payload => {
               });
             });
         });
-    }
-    else {
+    } else {
       console.log("invalid instruction");
 
       let message = Object.assign({
@@ -162,8 +157,6 @@ function getResults(result, user_name) {
     resultText = resultText + "\n";
   }
 
-  console.log(resultText);
-
   return Object.assign({
     "response_type": "in_channel",
     text: resultText
@@ -197,7 +190,6 @@ rtm.on('connected', () => {
 });
 
 rtm.on('message', (message) => {
-
   let channel = message.channel;
   let text = message.text;
   let user = message.user;
@@ -209,12 +201,6 @@ rtm.on('message', (message) => {
   if (typeof(user) != "undefined") { // ignore bot messages
 
     console.log(">>>> channel: " + channel);
-    console.log(">>>> text: " + text);
-    console.log(">>>> user: " + user);
-    console.log(">>>> type: " + type);
-    console.log(">>>> subtype: " + subtype);
-    console.log(">>>> ts: " + ts);
-    console.log(">>>> thread_ts: " + thread_ts);
 
     twss.threshold = 0.8;
     let isTwss = twss.is(text);
@@ -224,13 +210,13 @@ rtm.on('message', (message) => {
 
     if (isTwss) {
       rtm.addOutgoingEvent(true,
-                           "message",
-                           { text: ":twss:",
-                             channel: channel,
-                             thread_ts: ts
-                           })
-         .then(res => console.log(`Message sent: ${res}`))
-         .catch(console.error);
+          "message", {
+            text: ":twss:",
+            channel: channel,
+            thread_ts: ts
+          })
+        .then(res => console.log(`Message sent: ${res}`))
+        .catch(console.error);
     }
   }
 });
