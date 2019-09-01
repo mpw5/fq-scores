@@ -15,10 +15,18 @@ const ts = require('./src/tinyspeck.js'),
   datastore = require("./src/datastore.js").async,
   RtmClient = require('@slack/client').RTMClient;
 
+const {
+  WebClient
+} = require('@slack/web-api');
+const bot_token = process.env.SLACK_API_TOKEN
+const user_token = process.env.SLACK_API_USER_TOKEN
+const web = new WebClient(user_token);
+
 require('dotenv').config();
 
 var slack = ts.instance({});
 var connected = false;
+var connected_videos = false;
 var message;
 
 var twss = require('./src/twss.js');
@@ -29,6 +37,7 @@ slack.on('/fqscores', payload => {
 
   // get all the data items we're interested - username, points, emoji, comments
   let channel = payload.channel_name;
+  let channel_id = payload.channel_id;
   let user_id = payload.user_id;
   let user_name = payload.user_name;
   let response_url = payload.response_url;
@@ -50,7 +59,6 @@ slack.on('/fqscores', payload => {
         .then(function() {
           datastore.getAll(function(result) {
             let message = getResults(result, user_name);
-            console.log(result);
             slack.send(response_url, message).then(res => { // on success
               console.log("Response sent to /fqscores slash command");
             }, reason => { // on failure
@@ -58,8 +66,7 @@ slack.on('/fqscores', payload => {
             });
           });
         });
-    }
-    else if (typeof(pointsAwarded) == "string" && pointsAwarded.charAt(0) == ':' && pointsAwarded.charAt(pointsAwarded.length - 1) == ':') {
+    } else if (typeof(pointsAwarded) == "string" && pointsAwarded.charAt(0) == ':' && pointsAwarded.charAt(pointsAwarded.length - 1) == ':') {
       console.log("adding emoji");
 
       let message = Object.assign({
@@ -75,9 +82,8 @@ slack.on('/fqscores', payload => {
           datastore.setEmoji(userAwardedPoints, pointsAwarded);
 
           datastore.get(userAwardedPoints)
-            .catch(function(e){
-              console.log(e.type)
-              if(e.type = "DatastoreDataParsingException"){
+            .catch(function(e) {
+              if (e.type = "DatastoreDataParsingException") {
                 datastore.setScore(userAwardedPoints, 0);
               }
             });
@@ -88,8 +94,7 @@ slack.on('/fqscores', payload => {
             console.log("An error occurred when responding to /fqscores slash command: " + reason);
           });
         });
-    }
-    else if (isNaN(pointsAwarded) == false) {
+    } else if (isNaN(pointsAwarded) == false) {
       console.log("updating points for user");
 
       getConnected()
@@ -114,8 +119,7 @@ slack.on('/fqscores', payload => {
               });
             });
         });
-    }
-    else {
+    } else {
       console.log("invalid instruction");
 
       let message = Object.assign({
@@ -130,6 +134,48 @@ slack.on('/fqscores', payload => {
     }
 
   } else {
+    if (userAwardedPoints === 'fetch_videos') {
+      (async () => {
+
+        const video_hosting_array = ['https://youtu', 'https://www.youtube', 'bandcamp.com', 'https://vimeo.com']
+
+        for (const host of video_hosting_array) {
+          const res = await web.search.messages({
+            query: host + ' in:#friday-question'
+          });
+
+          var results = res['messages']['matches']
+
+          console.log(JSON.stringify(results));
+
+          getConnectedVideos()
+            .then(function() {
+              for (const result of results) {
+                for (const attachment of result['attachments']) {
+                  var video_html;
+
+                  if (attachment['service_name'] == 'YouTube' || attachment['service_name'] == 'Vimeo') {
+                    video_html = attachment['video_html'];
+                  } else {
+                    video_html = attachment['audio_html']; //bandcamp
+                  }
+
+                  let video = {
+                    "username": result['username'],
+                    "date_time": Date(result['ts'] * 1000),
+                    "title": attachment['title'],
+                    "title_link": attachment['title_link'],
+                    "video_html": video_html
+                  }
+                  console.log(video);
+
+                  datastore.setVideo(video);
+                }
+              }
+            });
+        }
+      })();
+    }
 
     let message = Object.assign({
       text: "This command only works in the #friday-question channel. If you would like to know more, come and talk to us. We're a friendly bunch."
@@ -162,8 +208,6 @@ function getResults(result, user_name) {
     resultText = resultText + "\n";
   }
 
-  console.log(resultText);
-
   return Object.assign({
     "response_type": "in_channel",
     text: resultText
@@ -182,7 +226,19 @@ function getConnected() {
   });
 }
 
-let rtm = new RtmClient(process.env.SLACK_API_TOKEN, {
+function getConnectedVideos() {
+  return new Promise(function(resolving) {
+    if (!connected_videos) {
+      connected_videos = datastore.connectVideos().then(function() {
+        resolving();
+      });
+    } else {
+      resolving();
+    }
+  });
+}
+
+let rtm = new RtmClient(bot_token, {
   logLevel: 'error',
   useRtmConnect: true,
   dataStore: false,
@@ -196,8 +252,11 @@ rtm.on('connected', () => {
   console.log('Connected!');
 });
 
-rtm.on('message', (message) => {
+rtm.on('connected_videos', () => {
+  console.log('Connected to videos!');
+});
 
+rtm.on('message', (message) => {
   let channel = message.channel;
   let text = message.text;
   let user = message.user;
@@ -209,12 +268,6 @@ rtm.on('message', (message) => {
   if (typeof(user) != "undefined") { // ignore bot messages
 
     console.log(">>>> channel: " + channel);
-    console.log(">>>> text: " + text);
-    console.log(">>>> user: " + user);
-    console.log(">>>> type: " + type);
-    console.log(">>>> subtype: " + subtype);
-    console.log(">>>> ts: " + ts);
-    console.log(">>>> thread_ts: " + thread_ts);
 
     twss.threshold = 0.8;
     let isTwss = twss.is(text);
@@ -224,13 +277,56 @@ rtm.on('message', (message) => {
 
     if (isTwss) {
       rtm.addOutgoingEvent(true,
-                           "message",
-                           { text: ":twss:",
-                             channel: channel,
-                             thread_ts: ts
-                           })
-         .then(res => console.log(`Message sent: ${res}`))
-         .catch(console.error);
+          "message", {
+            text: ":twss:",
+            channel: channel,
+            thread_ts: ts
+          })
+        .then(res => console.log(`Message sent: ${res}`))
+        .catch(console.error);
+    }
+
+    // is it a video?
+    if (text.includes('https://youtu') || text.includes('https://www.youtube') || text.includes('bandcamp.com') || text.includes('https://vimeo.com')) {
+      setTimeout(function() {
+        (async () => {
+          ;
+          let result = await web.conversations.history({
+            channel: channel,
+            latest: ts,
+            oldest: ts,
+            inclusive: true
+          });
+
+          var attachments = result['messages'][0]['attachments']
+
+          for (const attachment of attachments) {
+
+            var video_html;
+
+            if (attachment['service_name'] == 'YouTube' || attachment['service_name'] == 'Vimeo') {
+              video_html = attachment['video_html'];
+            } else {
+              video_html = attachment['audio_html']; //bandcamp
+            }
+
+            let video = {
+              "username": user,
+              "date_time": Date(ts * 1000),
+              "title": attachment['title'],
+              "title_link": attachment['title_link'],
+              "video_html": video_html
+            }
+            console.log(video);
+
+            getConnectedVideos()
+              .then(function() {
+                datastore.setVideo(video);
+                console.log('video added to datbase')
+              });
+          }
+        })();
+      }, 2000);
     }
   }
 });

@@ -8,6 +8,7 @@ var mongodb = require('mongodb');
 // Standard URI format: mongodb://[dbuser:dbpassword@]host:port/dbname, details set in .env
 var MONGODB_URI = 'mongodb://' + process.env.USER + ':' + process.env.PASS + '@' + process.env.HOST + ':' + process.env.DB_PORT + '/' + process.env.DB;
 var collection;
+var video_collection;
 
 // ------------------------------
 // ASYNCHRONOUS PROMISE-BASED API
@@ -70,6 +71,18 @@ function setEmoji(key, value) {
       } catch (ex) {
         reject(new DatastoreValueSerializationException(value, ex));
       }
+    }
+  });
+}
+
+
+// Serializes an object to JSON and stores it to the database
+function setVideo(video) {
+  return new Promise(function(resolve, reject) {
+    try {
+      video_collection.insertOne(video);
+    } catch (ex) {
+      reject(new DatastoreValueSerializationException(video, ex));
     }
   });
 }
@@ -174,6 +187,24 @@ function connect() {
   });
 }
 
+function connectVideos() {
+  return new Promise(function(resolve, reject) {
+    try {
+      mongodb.MongoClient.connect(MONGODB_URI, { useNewUrlParser: true }, function(err, db) {
+        if (err) reject(err);
+
+        const myDb = db.db(process.env.DB);
+
+        video_collection = myDb.collection(process.env.VIDEO_COLLECTION);
+
+        resolve(video_collection);
+      });
+    } catch (ex) {
+      reject(new DatastoreUnknownException("connect", null, ex));
+    }
+  });
+}
+
 function DatastoreKeyNeedToBeStringException(keyObject) {
   this.type = this.constructor.name;
   this.description = "Datastore can only use strings as keys, got " + keyObject.constructor.name + " instead.";
@@ -265,6 +296,16 @@ function connectCallback(callback) {
     });
 }
 
+function connectVideosCallback(callback) {
+  connectVideos()
+    .then(function(value) {
+      callback(null, value);
+    })
+    .catch(function(err) {
+      callback(err, null);
+    });
+}
+
 function setSync(key, value) {
   return sync.await(setCallback(key, value, sync.defer()));
 }
@@ -285,6 +326,10 @@ function connectSync() {
   return sync.await(connectCallback(sync.defer()));
 }
 
+function connectVideosSync() {
+  return sync.await(connectVideosCallback(sync.defer()));
+}
+
 function initializeApp(app) {
   app.use(function(req, res, next) {
     sync.fiber(next);
@@ -294,21 +339,25 @@ function initializeApp(app) {
 var asyncDatastore = {
   setScore: setScore,
   setEmoji: setEmoji,
+  setVideo: setVideo,
   get: get,
   getAll: getAll,
   remove: remove,
   removeMany: removeMany,
-  connect: connect
+  connect: connect,
+  connectVideos: connectVideos
 };
 
 var syncDatastore = {
   setScore: setSync,
   setEmoji: setEmoji,
+  setVideo: setVideo,
   get: getSync,
   getAll: getAll,
   remove: removeSync,
   removeMany: removeManySync,
   connect: connectSync,
+  connectVideos: connectVideosSync,
   initializeApp: initializeApp
 };
 
