@@ -26,7 +26,6 @@ require('dotenv').config();
 
 var slack = ts.instance({});
 var connected = false;
-var connected_videos = false;
 var message;
 
 var twss = require('./src/twss.js');
@@ -134,48 +133,6 @@ slack.on('/fqscores', payload => {
     }
 
   } else {
-    if (userAwardedPoints === 'fetch_videos') {
-      (async () => {
-
-        const video_hosting_array = ['https://youtu', 'https://www.youtube', 'bandcamp.com', 'https://vimeo.com']
-
-        for (const host of video_hosting_array) {
-          const res = await web.search.messages({
-            query: host + ' in:#friday-question'
-          });
-
-          var results = res['messages']['matches']
-
-          console.log(JSON.stringify(results));
-
-          getConnectedVideos()
-            .then(function() {
-              for (const result of results) {
-                for (const attachment of result['attachments']) {
-                  var video_html;
-
-                  if (attachment['service_name'] == 'YouTube' || attachment['service_name'] == 'Vimeo') {
-                    video_html = attachment['video_html'];
-                  } else {
-                    video_html = attachment['audio_html']; //bandcamp
-                  }
-
-                  let video = {
-                    "username": result['username'],
-                    "date_time": Date(result['ts'] * 1000),
-                    "title": attachment['title'],
-                    "title_link": attachment['title_link'],
-                    "video_html": video_html
-                  }
-                  console.log(video);
-
-                  datastore.setVideo(video);
-                }
-              }
-            });
-        }
-      })();
-    }
 
     let message = Object.assign({
       text: "This command only works in the #friday-question channel. If you would like to know more, come and talk to us. We're a friendly bunch."
@@ -226,18 +183,6 @@ function getConnected() {
   });
 }
 
-function getConnectedVideos() {
-  return new Promise(function(resolving) {
-    if (!connected_videos) {
-      connected_videos = datastore.connectVideos().then(function() {
-        resolving();
-      });
-    } else {
-      resolving();
-    }
-  });
-}
-
 let rtm = new RtmClient(bot_token, {
   logLevel: 'error',
   useRtmConnect: true,
@@ -250,10 +195,6 @@ rtm.start();
 
 rtm.on('connected', () => {
   console.log('Connected!');
-});
-
-rtm.on('connected_videos', () => {
-  console.log('Connected to videos!');
 });
 
 rtm.on('message', (message) => {
@@ -284,49 +225,6 @@ rtm.on('message', (message) => {
           })
         .then(res => console.log(`Message sent: ${res}`))
         .catch(console.error);
-    }
-
-    // is it a video?
-    if (text.includes('https://youtu') || text.includes('https://www.youtube') || text.includes('bandcamp.com') || text.includes('https://vimeo.com')) {
-      setTimeout(function() {
-        (async () => {
-          ;
-          let result = await web.conversations.history({
-            channel: channel,
-            latest: ts,
-            oldest: ts,
-            inclusive: true
-          });
-
-          var attachments = result['messages'][0]['attachments']
-
-          for (const attachment of attachments) {
-
-            var video_html;
-
-            if (attachment['service_name'] == 'YouTube' || attachment['service_name'] == 'Vimeo') {
-              video_html = attachment['video_html'];
-            } else {
-              video_html = attachment['audio_html']; //bandcamp
-            }
-
-            let video = {
-              "username": user,
-              "date_time": Date(ts * 1000),
-              "title": attachment['title'],
-              "title_link": attachment['title_link'],
-              "video_html": video_html
-            }
-            console.log(video);
-
-            getConnectedVideos()
-              .then(function() {
-                datastore.setVideo(video);
-                console.log('video added to datbase')
-              });
-          }
-        })();
-      }, 2000);
     }
   }
 });

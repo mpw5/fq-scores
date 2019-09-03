@@ -1,0 +1,41 @@
+<head>
+  <title>FQ Songs</title>
+
+  <link rel="stylesheet" type="text/css" href="styles.css" />
+  <link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css" />
+  <script type="text/javascript" src="DataTables/jQuery-3.3.1/jquery-3.3.1.min.js"></script>
+  <script type="text/javascript" src="DataTables/datatables.min.js"></script>
+
+  <script>
+    $(document).ready(function() {
+      $('#fq').DataTable({
+        paging: false
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <h1>Every Friday Question Answer Ever</h1>
+
+  <table id="fq" class="display">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>User</th>
+        <th>Title</th>
+        <th>Video</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for(var i=0; i < results.length; i++) { %>
+      <tr>
+        <td><%= moment(results[i].date).format('MMMM Do YYYY, HH:mm:ss') %></td>
+        <td><%= results[i].username %></td>
+        <td><%- `<a href= ${results[i].title_link}>${results[i].title}</a>` %></td>
+        <td><%- results[i].video_html %></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</body>
