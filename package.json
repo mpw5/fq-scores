@@ -16,7 +16,7 @@
     "delay": "^4.3.0",
     "detect-libc": "^1.0.3",
     "dotenv": "^8.1.0",
-    "ejs": "^2.6.2",
+    "ejs": "^2.7.1",
     "express": "^4.17.1",
     "giphy-api": "^2.0.1",
     "httpdispatcher": "^2.1.2",
