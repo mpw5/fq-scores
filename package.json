@@ -6,9 +6,9 @@
   },
   "description": "Process Friday Question Scores",
   "scripts": {
-    "start": "node index.js"
+    "start": "node start.js"
   },
-  "author": "Mark Whitaker <mark.whitaker@justice.gov.uk>",
+  "author": "Mark Whitaker <mark.whitaker@digital.justice.gov.uk>",
   "dependencies": {
     "@slack/client": "^5.0.2",
     "axios": "^0.19.0",
@@ -16,7 +16,6 @@
     "delay": "^4.3.0",
     "detect-libc": "^1.0.3",
     "dotenv": "^8.1.0",
-    "giphy-api": "^2.0.1",
     "httpdispatcher": "^2.1.2",
     "mongodb": "*",
     "newrelic": "^5.11.0",
