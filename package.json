@@ -18,7 +18,7 @@
     "dotenv": "^8.1.0",
     "httpdispatcher": "^2.1.2",
     "mongodb": "*",
-    "newrelic": "^5.11.0",
+    "newrelic": "^5.13.1",
     "optimist": "^0.6.1",
     "request": "2.88.0",
     "synchronize": "^2.0.0",
