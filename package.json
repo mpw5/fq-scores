@@ -19,7 +19,6 @@
     "httpdispatcher": "^2.1.2",
     "mongodb": "*",
     "newrelic": "^6.9.0",
-    "optimist": "^0.6.1",
     "request": "2.88.2",
     "synchronize": "^2.0.0",
     "twss": "^0.1.6",
