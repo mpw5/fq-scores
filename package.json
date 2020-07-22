@@ -13,7 +13,7 @@
     "@slack/client": "^5.0.2",
     "axios": "^0.19.2",
     "chai": "^4.2.0",
-    "delay": "^4.3.0",
+    "delay": "^4.4.0",
     "detect-libc": "^1.0.3",
     "dotenv": "^8.2.0",
     "httpdispatcher": "^2.1.2",
