@@ -22,7 +22,7 @@
     "request": "2.88.2",
     "synchronize": "^2.0.0",
     "twss": "^0.1.6",
-    "ws": "^7.4.0"
+    "ws": "^7.4.1"
   },
   "license": "MIT"
 }
