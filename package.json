@@ -12,7 +12,7 @@
   "dependencies": {
     "@slack/client": "^5.0.2",
     "axios": "^0.21.1",
-    "chai": "^4.3.0",
+    "chai": "^4.3.3",
     "delay": "^5.0.0",
     "detect-libc": "^1.0.3",
     "dotenv": "^8.2.0",
