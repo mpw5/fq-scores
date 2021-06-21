@@ -22,7 +22,11 @@
     "request": "2.88.2",
     "synchronize": "^2.0.0",
     "twss": "^0.1.6",
+<<<<<<< HEAD
     "ws": "^7.4.6"
+=======
+    "ws": "^7.5.0"
+>>>>>>> 039f5fb (Bump ws from 7.4.5 to 7.5.0)
   },
   "license": "MIT"
 }
