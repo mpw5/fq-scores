@@ -15,18 +15,14 @@
     "chai": "^4.3.4",
     "delay": "^5.0.0",
     "detect-libc": "^1.0.3",
-    "dotenv": "^9.0.2",
+    "dotenv": "^10.0.0",
     "httpdispatcher": "^2.1.2",
     "mongodb": "*",
     "newrelic": "^7.5.1",
     "request": "2.88.2",
     "synchronize": "^2.0.0",
     "twss": "^0.1.6",
-<<<<<<< HEAD
-    "ws": "^7.4.6"
-=======
     "ws": "^7.5.0"
->>>>>>> 039f5fb (Bump ws from 7.4.5 to 7.5.0)
   },
   "license": "MIT"
 }
