@@ -18,11 +18,11 @@
     "dotenv": "^10.0.0",
     "httpdispatcher": "^2.1.2",
     "mongodb": "*",
-    "newrelic": "^7.5.1",
+    "newrelic": "^8.0.0",
     "request": "2.88.2",
     "synchronize": "^2.0.0",
     "twss": "^0.1.6",
-    "ws": "^7.5.0"
+    "ws": "^8.0.0"
   },
   "license": "MIT"
 }
