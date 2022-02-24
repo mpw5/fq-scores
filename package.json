@@ -14,7 +14,7 @@
     "axios": "^0.26.0",
     "chai": "^4.3.6",
     "delay": "^5.0.0",
-    "detect-libc": "^1.0.3",
+    "detect-libc": "^2.0.1",
     "dotenv": "^16.0.0",
     "httpdispatcher": "^2.2.0",
     "mongodb": "*",
