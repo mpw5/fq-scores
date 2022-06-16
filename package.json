@@ -11,17 +11,17 @@
   "author": "Mark Whitaker <mark.whitaker@digital.justice.gov.uk>",
   "dependencies": {
     "@slack/client": "^5.0.2",
-    "axios": "^0.26.0",
+    "axios": "^0.27.2",
     "chai": "^4.3.6",
     "delay": "^5.0.0",
     "detect-libc": "^2.0.1",
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.0.1",
     "httpdispatcher": "^2.2.0",
     "mongodb": "*",
-    "newrelic": "^8.7.1",
+    "newrelic": "^8.14.1",
     "request": "2.88.2",
     "twss": "^0.1.6",
-    "ws": "^8.5.0"
+    "ws": "^8.8.0"
   },
   "license": "MIT"
 }
