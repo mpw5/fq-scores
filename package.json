@@ -18,7 +18,7 @@
     "dotenv": "^16.0.1",
     "httpdispatcher": "^2.2.0",
     "mongodb": "*",
-    "newrelic": "^8.14.1",
+    "newrelic": "^8.17.0",
     "request": "2.88.2",
     "twss": "^0.1.6",
     "ws": "^8.8.0"
