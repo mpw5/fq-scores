@@ -1,6 +1,6 @@
 exports.numWordsInNgram = 1;
 exports.numNeighbours = 3;
-exports.threshold = 0.5;
+exports.threshold = 0.8;
 
 exports.trainingData = {
   pos: require('../data/Positive_Prompts_TS.js').data,
