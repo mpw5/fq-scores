@@ -187,37 +187,37 @@ rtm.on('connected', () => {
   console.log('Connected!');
 });
 
-rtm.on('message', (message) => {
-  let channel = message.channel;
-  let text = message.text;
-  let user = message.user;
-  let type = message.type;
-  let subtype = message.subtype;
-  let thread_ts = message.thread_ts;
-  let ts = message.ts;
+// rtm.on('message', (message) => {
+//   let channel = message.channel;
+//   let text = message.text;
+//   let user = message.user;
+//   let type = message.type;
+//   let subtype = message.subtype;
+//   let thread_ts = message.thread_ts;
+//   let ts = message.ts;
 
-  if (typeof(user) != "undefined") { // ignore bot messages
+//   if (typeof(user) != "undefined") { // ignore bot messages
 
-    console.log(">>>> channel: " + channel);
+//     console.log(">>>> channel: " + channel);
 
-    twss.threshold = 0.8;
-    let isTwss = twss.is(text);
-    let prob = twss.prob(text);
+//     twss.threshold = 0.8;
+//     let isTwss = twss.is(text);
+//     let prob = twss.prob(text);
 
-    console.log("twss: " + prob);
+//     console.log("twss: " + prob);
 
-    if (isTwss) {
-      rtm.addOutgoingEvent(true,
-          "message", {
-            text: ":twss:",
-            channel: channel,
-            thread_ts: ts
-          })
-        .then(res => console.log(`Message sent: ${res}`))
-        .catch(console.error);
-    }
-  }
-});
+//     if (isTwss) {
+//       rtm.addOutgoingEvent(true,
+//           "message", {
+//             text: ":twss:",
+//             channel: channel,
+//             thread_ts: ts
+//           })
+//         .then(res => console.log(`Message sent: ${res}`))
+//         .catch(console.error);
+//     }
+//   }
+// });
 
 // incoming http requests
 slack.listen(process.env.PORT || '3000');
