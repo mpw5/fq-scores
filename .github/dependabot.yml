@@ -6,16 +6,3 @@ updates:
     interval: weekly
   open-pull-requests-limit: 10
   target-branch: test
-  ignore:
-  - dependency-name: newrelic
-    versions:
-    - 7.1.0
-    - 7.1.2
-    - 7.2.0
-    - 7.3.0
-  - dependency-name: chai
-    versions:
-    - 4.3.3
-  - dependency-name: delay
-    versions:
-    - 4.4.1

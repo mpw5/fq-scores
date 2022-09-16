@@ -8,8 +8,6 @@
 // 3) running the command in any channel other than #friday-question gives the user an error
 "use strict";
 
-require('newrelic');
-
 const ts = require('./src/tinyspeck.js'),
   users = {},
   datastore = require("./src/datastore.js").async,
