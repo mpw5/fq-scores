@@ -17,7 +17,7 @@
     "chai": "^4.3.10",
     "delay": "^5.0.0",
     "detect-libc": "^2.0.2",
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.3.1",
     "httpdispatcher": "^2.2.0",
     "mongodb": "*",
     "request": "2.88.2",
